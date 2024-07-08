@@ -2,12 +2,15 @@
   <div class="rounded-[30px] bg-slate-900 h-full p-4 flex flex-col">
     <div class="overflow-y-auto flex-1 mb-4">
       <div class="text-white p-4">
+        <!-- Display user messages -->
         <div class="p-2 mb-3 px-5 rounded-3xl bg-gray-950" v-for="(msg, index) in messages" :key="index">{{ msg }}</div>
+        <!-- Display generated responses -->
         <div class="mx-5 mb-3 px-5" v-for="(res, index) in response" :key="'response-' + index">{{ res }}</div>
       </div>
     </div>
     <div class="mt-4 mb-2">
       <div class="flex-1 flex-row flex">
+        <!-- Input field for typing message -->
         <input
           type="text"
           v-model="message"
@@ -15,6 +18,7 @@
           class="flex-1 rounded-l-2xl px-4 py-2 bg-gray-800 text-white outline-none"
           placeholder="Type your message..."
         />
+        <!-- Button to send message -->
         <button
           class="rounded-r-2xl px-4 py-2 bg-blue-500 text-white hover:bg-blue-600"
           @click="generateAnswer"
@@ -25,7 +29,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 import axios from 'axios';
@@ -46,33 +49,46 @@ export default {
         return;
       }
 
+      // Add current message to messages array
       this.messages.push(this.message.trim());
-      this.message = '';
+      this.message = ''; // Clear message input field
 
       try {
+        // Send message to API and get response
         const response = await axios.post(
           'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyBmmP6Q4LNuywthEABXwjFf0IcTXgHH-ts',
           {
             contents: [
               {
-                parts: [{ text: this.messages.join('\n') }], // Ensure message parts are joined correctly
+                parts: [{ text: this.messages.join('\n') }],
               },
             ],
           }
         );
 
+        // Extract generated response from API response
         const generatedResponse =
-          response.data.candidates[0]?.content.parts[0]?.text; // Safely access nested data
+          response.data.candidates[0]?.content.parts[0]?.text;
+
         if (generatedResponse) {
+          // Add generated response to response array
           this.response.push(generatedResponse);
         } else {
           throw new Error('Invalid response structure');
         }
-        console.log(generatedResponse);
+
+        // Clear only previous user messages after sending next message
+        this.clearPreviousMessages();
       } catch (error) {
         console.error('Error generating response:', error);
         this.response.push('Error generating response.');
       }
+    },
+
+    clearPreviousMessages() {
+      // Remove all messages except the last one (current message)
+      this.messages = [this.messages[this.messages.length - 1]];
+      this.response = [this.response[this.response.length - 1]];
     },
   },
 };
