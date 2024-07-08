@@ -1,30 +1,23 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-</script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <div class="flex flex-row h-screen p-6">
+    <div class="lg:flex w-full">
+      <div class="lg:w-[15%] lg:mr-6 mr-0">
+        <img class="aspect-auto w-full items-center mb-5" src="../AIBot.png" />
+        <h1 class="text-center font-bold text-2xl mb-8">Our AI Build with Gemini API</h1>
+      </div>
+      <div class="lg:w-[85%] h-full">
+        <Chat/>
+      </div>
+    </div>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<script>
+import Chat from './components/Chat.vue';
+
+export default {
+  name: 'App',
+  components: { Chat }
+};
+</script>
